@@ -1,0 +1,54 @@
+//mumax 3.11.1 [windows_amd64 go1.22.4(gc) CUDA-12.9]
+//commit hash: ee077035
+//CPU info: Intel(R) Core(TM) i9-14900HX, Cores: 32, 2200 MHz
+//GPU info: NVIDIA GeForce RTX 4060 Laptop GPU(8187MB), CUDA Driver 13.1, cc=8.9, using cc=75 PTX
+//OS  info: Windows OS, Hostname: FEYNMAN
+//Timestamp: 2026-03-23 19:14:21
+//(c) Arne Vansteenkiste, Dynamat LAB, Ghent University, Belgium
+//This is free software without any warranty. See license.txt
+//********************************************************************//
+//  If you use mumax in any work or publication,                      //
+//  we kindly ask you to cite the references in references.bib        //
+//********************************************************************//
+//output directory: demo1.out/
+Nx := 64
+Ny := 32
+Nz := 16
+Lx := 128e-9
+Ly := 64e-9
+Lz := 32e-9
+SetGridSize(Nx, Ny, Nz)
+SetCellSize(Lx/Nx, Ly/Ny, Lz/Nz)
+Msat = 800e3
+Aex = 13e-12
+alpha = 0.02
+Ku1 = 0
+anisU = vector(1, 0, 0)
+m = uniform(1, 0.01, 0)
+TableAdd(B_ext)
+TableAdd(E_total)
+Bmax := 500e-3
+dB := 10e-3
+B_ext = vector(Bmax, 0, 0)
+Minimize()
+TableSave()
+Save(m)
+for bx := Bmax - dB; bx >= -Bmax; bx -= dB {
+	B_ext = vector(bx, 0, 0)
+	Minimize()
+	TableSave()
+	Save(m)
+}
+for bx := -Bmax + dB; bx <= Bmax; bx += dB {
+	B_ext = vector(bx, 0, 0)
+	Minimize()
+	TableSave()
+	Save(m)
+}
+Flush()
+//********************************************************************//
+//Please cite the following references, relevant for your simulation. //
+//See bibtex file in output folder for justification.                 //
+//********************************************************************//
+//   * Vansteenkiste et al., AIP Adv. 4, 107133 (2014).
+//   * Exl et al., J. Appl. Phys. 115, 17D118 (2014).

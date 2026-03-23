@@ -1,0 +1,50 @@
+
+Nx := 64
+Ny := 32
+Nz := 16
+
+Lx := 128e-9
+Ly := 64e-9
+Lz := 32e-9
+
+SetGridSize(Nx, Ny, Nz)
+SetCellSize(Lx/Nx, Ly/Ny, Lz/Nz)
+
+// 材料参数
+Msat  = 800e3      
+Aex   = 13e-12     
+alpha = 0.02
+
+Ku1   = 0          
+anisU = vector(1, 0, 0)
+
+// 初始状态 
+m = uniform(1, 0.01, 0) 
+
+TableAdd(B_ext)       
+TableAdd(E_total)
+
+Bmax := 500e-3     
+dB   := 10e-3       // 10 mT 步长
+
+// 初始饱和场
+B_ext = vector(Bmax, 0, 0)
+Minimize()
+TableSave()
+Save(m) 
+
+for bx := Bmax - dB; bx >= -Bmax; bx -= dB {
+    B_ext = vector(bx, 0, 0)
+    Minimize()
+    TableSave()
+    Save(m) 
+}
+
+for bx := -Bmax + dB; bx <= Bmax; bx += dB {
+    B_ext = vector(bx, 0, 0)
+    Minimize()
+    TableSave()
+    Save(m)
+}
+
+Flush()

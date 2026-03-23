@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.mx3": "go"
+  },
+  "editor.fontSize": 16
+}
